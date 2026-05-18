@@ -9,7 +9,7 @@ public class Schedule
     [Required(ErrorMessage = "Doctor is required")]
     public int DoctorId { get; set; }
 
-    public Doctor Doctor { get; set; } = null!;
+    public Doctor? Doctor { get; set; }
 
     [Required(ErrorMessage = "Day of week is required")]
     public DayOfWeek DayOfWeek { get; set; }

@@ -13,7 +13,7 @@ public class Doctor
     [Required(ErrorMessage = "Specialization is required")]
     public int SpecializationId { get; set; }
 
-    public Specialization Specialization { get; set; } = null!;
+    public Specialization? Specialization { get; set; }
 
     public ICollection<Schedule> Schedules { get; set; } = new List<Schedule>();
 
