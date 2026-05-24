@@ -1,0 +1,136 @@
+﻿body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f6f8;
+    color: #222;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 30px auto;
+    background-color: white;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.08);
+}
+
+h1 {
+    margin-bottom: 5px;
+    color: #2b5c8a;
+}
+
+h2 {
+    margin-top: 25px;
+    color: #333;
+}
+
+.description {
+    color: #666;
+    margin-bottom: 20px;
+}
+
+nav {
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+button {
+    padding: 8px 14px;
+    margin: 4px;
+    border: none;
+    border-radius: 4px;
+    background-color: #2b5c8a;
+    color: white;
+    cursor: pointer;
+}
+
+    button:hover {
+        background-color: #1f4568;
+    }
+
+    button.delete {
+        background-color: #c0392b;
+    }
+
+        button.delete:hover {
+            background-color: #922b21;
+        }
+
+    button.edit {
+        background-color: #4f7f35;
+    }
+
+        button.edit:hover {
+            background-color: #3e642a;
+        }
+
+form {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #f0f4f8;
+    border: 1px solid #d9e2ec;
+    border-radius: 6px;
+}
+
+input,
+select {
+    padding: 8px;
+    margin: 5px;
+    border: 1px solid #bbb;
+    border-radius: 4px;
+    min-width: 180px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    background-color: white;
+}
+
+th,
+td {
+    border: 1px solid #ddd;
+    padding: 9px;
+    text-align: left;
+}
+
+th {
+    background-color: #2b5c8a;
+    color: white;
+}
+
+tr:nth-child(even) {
+    background-color: #f8f8f8;
+}
+
+.section {
+    display: none;
+}
+
+    .section.active {
+        display: block;
+    }
+
+#message {
+    font-weight: bold;
+    color: #2b5c8a;
+}
+
+@media (max-width: 800px) {
+    .container {
+        width: 95%;
+        padding: 15px;
+    }
+
+    input,
+    select {
+        width: 95%;
+    }
+
+    table {
+        font-size: 13px;
+    }
+}

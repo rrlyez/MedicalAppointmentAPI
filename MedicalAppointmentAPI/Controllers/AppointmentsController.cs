@@ -32,35 +32,60 @@ public class AppointmentsController : ControllerBase
             .AsNoTracking()
             .FirstOrDefaultAsync(a => a.AppointmentId == id);
 
-        return appointment is null ? NotFound("Appointment was not found.") : appointment;
+        if (appointment is null)
+        {
+            return NotFound("Appointment was not found.");
+        }
+
+        return appointment;
     }
 
     [HttpPost]
     public async Task<ActionResult<Appointment>> PostAppointment(Appointment appointment)
     {
         var validationResult = await ValidateAppointmentAsync(appointment);
+
         if (validationResult is not null)
+        {
             return validationResult;
+        }
+
+        appointment.AppointmentDateTime = appointment.AppointmentDateTime.ToUniversalTime();
 
         _context.Appointments.Add(appointment);
         await _context.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(GetAppointment), new { id = appointment.AppointmentId }, appointment);
+        return CreatedAtAction(
+            nameof(GetAppointment),
+            new { id = appointment.AppointmentId },
+            appointment
+        );
     }
 
     [HttpPut("{id:int}")]
     public async Task<IActionResult> PutAppointment(int id, Appointment appointment)
     {
         if (id != appointment.AppointmentId)
+        {
             return BadRequest("Route id and appointment id do not match.");
+        }
 
-        var exists = await _context.Appointments.AnyAsync(a => a.AppointmentId == id);
+        var exists = await _context.Appointments
+            .AnyAsync(a => a.AppointmentId == id);
+
         if (!exists)
+        {
             return NotFound("Appointment was not found.");
+        }
 
         var validationResult = await ValidateAppointmentAsync(appointment, id);
+
         if (validationResult is not null)
+        {
             return validationResult;
+        }
+
+        appointment.AppointmentDateTime = appointment.AppointmentDateTime.ToUniversalTime();
 
         _context.Entry(appointment).State = EntityState.Modified;
         await _context.SaveChangesAsync();
@@ -72,8 +97,11 @@ public class AppointmentsController : ControllerBase
     public async Task<IActionResult> DeleteAppointment(int id)
     {
         var appointment = await _context.Appointments.FindAsync(id);
+
         if (appointment is null)
+        {
             return NotFound("Appointment was not found.");
+        }
 
         _context.Appointments.Remove(appointment);
         await _context.SaveChangesAsync();
@@ -84,9 +112,13 @@ public class AppointmentsController : ControllerBase
     [HttpGet("doctor/{doctorId:int}")]
     public async Task<ActionResult<IEnumerable<Appointment>>> GetAppointmentsByDoctor(int doctorId)
     {
-        var doctorExists = await _context.Doctors.AnyAsync(d => d.DoctorId == doctorId);
+        var doctorExists = await _context.Doctors
+            .AnyAsync(d => d.DoctorId == doctorId);
+
         if (!doctorExists)
+        {
             return NotFound("Doctor was not found.");
+        }
 
         return await _context.Appointments
             .AsNoTracking()
@@ -98,9 +130,13 @@ public class AppointmentsController : ControllerBase
     [HttpGet("patient/{patientId:int}")]
     public async Task<ActionResult<IEnumerable<Appointment>>> GetAppointmentsByPatient(int patientId)
     {
-        var patientExists = await _context.Patients.AnyAsync(p => p.PatientId == patientId);
+        var patientExists = await _context.Patients
+            .AnyAsync(p => p.PatientId == patientId);
+
         if (!patientExists)
+        {
             return NotFound("Patient was not found.");
+        }
 
         return await _context.Appointments
             .AsNoTracking()
@@ -113,38 +149,87 @@ public class AppointmentsController : ControllerBase
     public async Task<IActionResult> ChangeAppointmentStatus(int id, [FromBody] string status)
     {
         if (string.IsNullOrWhiteSpace(status))
+        {
             return BadRequest("Status is required.");
+        }
 
         var appointment = await _context.Appointments.FindAsync(id);
-        if (appointment is null)
-            return NotFound("Appointment was not found.");
 
-        appointment.Status = status;
+        if (appointment is null)
+        {
+            return NotFound("Appointment was not found.");
+        }
+
+        appointment.Status = status.Trim();
         await _context.SaveChangesAsync();
 
         return NoContent();
     }
 
-    private async Task<BadRequestObjectResult?> ValidateAppointmentAsync(Appointment appointment, int? currentAppointmentId = null)
+    private async Task<BadRequestObjectResult?> ValidateAppointmentAsync(
+        Appointment appointment,
+        int? currentAppointmentId = null)
     {
         if (appointment.AppointmentDateTime < DateTimeOffset.Now)
+        {
             return BadRequest("Appointment date cannot be in the past.");
+        }
 
-        var patientExists = await _context.Patients.AnyAsync(p => p.PatientId == appointment.PatientId);
+        if (appointment.DurationMinutes <= 0)
+        {
+            return BadRequest("Appointment duration must be greater than zero.");
+        }
+
+        var patientExists = await _context.Patients
+            .AnyAsync(p => p.PatientId == appointment.PatientId);
+
         if (!patientExists)
+        {
             return BadRequest("Selected patient does not exist.");
+        }
 
-        var doctorExists = await _context.Doctors.AnyAsync(d => d.DoctorId == appointment.DoctorId);
+        var doctorExists = await _context.Doctors
+            .AnyAsync(d => d.DoctorId == appointment.DoctorId);
+
         if (!doctorExists)
+        {
             return BadRequest("Selected doctor does not exist.");
+        }
 
-        var duplicateAppointment = await _context.Appointments.AnyAsync(a =>
+        var localAppointmentDateTime = appointment.AppointmentDateTime.ToLocalTime();
+
+        var appointmentDay = localAppointmentDateTime.DayOfWeek;
+        var appointmentStartTime = localAppointmentDateTime.TimeOfDay;
+        var appointmentEndTime = appointmentStartTime.Add(
+            TimeSpan.FromMinutes(appointment.DurationMinutes)
+        );
+
+        var doctorIsAvailable = await _context.Schedules.AnyAsync(s =>
+            s.DoctorId == appointment.DoctorId &&
+            s.DayOfWeek == appointmentDay &&
+            appointmentStartTime >= s.StartTime &&
+            appointmentEndTime <= s.EndTime
+        );
+
+        if (!doctorIsAvailable)
+        {
+            return BadRequest("Doctor does not work at this time.");
+        }
+
+        var newStart = appointment.AppointmentDateTime.ToUniversalTime();
+        var newEnd = newStart.AddMinutes(appointment.DurationMinutes);
+
+        var hasTimeConflict = await _context.Appointments.AnyAsync(a =>
             a.DoctorId == appointment.DoctorId &&
-            a.AppointmentDateTime == appointment.AppointmentDateTime &&
-            (!currentAppointmentId.HasValue || a.AppointmentId != currentAppointmentId.Value));
+            (!currentAppointmentId.HasValue || a.AppointmentId != currentAppointmentId.Value) &&
+            newStart < a.AppointmentDateTime.AddMinutes(a.DurationMinutes) &&
+            newEnd > a.AppointmentDateTime
+        );
 
-        if (duplicateAppointment)
-            return BadRequest("This doctor already has an appointment at this time.");
+        if (hasTimeConflict)
+        {
+            return BadRequest("This appointment overlaps with another appointment of the same doctor.");
+        }
 
         return null;
     }

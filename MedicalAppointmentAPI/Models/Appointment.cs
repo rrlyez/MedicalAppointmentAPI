@@ -19,6 +19,9 @@ public class Appointment
     [Required(ErrorMessage = "Appointment date and time are required")]
     public DateTimeOffset AppointmentDateTime { get; set; }
 
+    [Range(1, 480, ErrorMessage = "Duration must be from 1 to 480 minutes")]
+    public int DurationMinutes { get; set; } = 30;
+
     [Required(ErrorMessage = "Status is required")]
     [StringLength(30, ErrorMessage = "Status cannot exceed 30 characters")]
     public string Status { get; set; } = "Scheduled";

@@ -23,186 +23,189 @@ namespace MedicalAppointmentAPI.Migrations
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("MedicalAppointmentAPI.Models.Appointment", b =>
-                {
-                    b.Property<int>("AppointmentId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+            {
+                b.Property<int>("AppointmentId")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("AppointmentId"));
+                NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("AppointmentId"));
 
-                    b.Property<DateTimeOffset>("AppointmentDateTime")
-                        .HasColumnType("timestamp with time zone");
+                b.Property<DateTimeOffset>("AppointmentDateTime")
+                    .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("DoctorId")
-                        .HasColumnType("integer");
+                b.Property<int>("DoctorId")
+                    .HasColumnType("integer");
 
-                    b.Property<int>("PatientId")
-                        .HasColumnType("integer");
+                b.Property<int>("DurationMinutes")
+                    .HasColumnType("integer");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("character varying(30)");
+                b.Property<int>("PatientId")
+                    .HasColumnType("integer");
 
-                    b.HasKey("AppointmentId");
+                b.Property<string>("Status")
+                    .IsRequired()
+                    .HasMaxLength(30)
+                    .HasColumnType("character varying(30)");
 
-                    b.HasIndex("DoctorId");
+                b.HasKey("AppointmentId");
 
-                    b.HasIndex("PatientId");
+                b.HasIndex("DoctorId");
 
-                    b.ToTable("Appointments");
-                });
+                b.HasIndex("PatientId");
+
+                b.ToTable("Appointments");
+            });
 
             modelBuilder.Entity("MedicalAppointmentAPI.Models.Doctor", b =>
-                {
-                    b.Property<int>("DoctorId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+            {
+                b.Property<int>("DoctorId")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("DoctorId"));
+                NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("DoctorId"));
 
-                    b.Property<string>("FullName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                b.Property<string>("FullName")
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .HasColumnType("character varying(100)");
 
-                    b.Property<int>("SpecializationId")
-                        .HasColumnType("integer");
+                b.Property<int>("SpecializationId")
+                    .HasColumnType("integer");
 
-                    b.HasKey("DoctorId");
+                b.HasKey("DoctorId");
 
-                    b.HasIndex("SpecializationId");
+                b.HasIndex("SpecializationId");
 
-                    b.ToTable("Doctors");
-                });
+                b.ToTable("Doctors");
+            });
 
             modelBuilder.Entity("MedicalAppointmentAPI.Models.Patient", b =>
-                {
-                    b.Property<int>("PatientId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+            {
+                b.Property<int>("PatientId")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("PatientId"));
+                NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("PatientId"));
 
-                    b.Property<string>("Email")
-                        .HasColumnType("text");
+                b.Property<string>("Email")
+                    .HasColumnType("text");
 
-                    b.Property<string>("FullName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                b.Property<string>("FullName")
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .HasColumnType("character varying(100)");
 
-                    b.Property<string>("Phone")
-                        .IsRequired()
-                        .HasColumnType("text");
+                b.Property<string>("Phone")
+                    .IsRequired()
+                    .HasColumnType("text");
 
-                    b.HasKey("PatientId");
+                b.HasKey("PatientId");
 
-                    b.ToTable("Patients");
-                });
+                b.ToTable("Patients");
+            });
 
             modelBuilder.Entity("MedicalAppointmentAPI.Models.Schedule", b =>
-                {
-                    b.Property<int>("ScheduleId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+            {
+                b.Property<int>("ScheduleId")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ScheduleId"));
+                NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ScheduleId"));
 
-                    b.Property<int>("DayOfWeek")
-                        .HasColumnType("integer");
+                b.Property<int>("DayOfWeek")
+                    .HasColumnType("integer");
 
-                    b.Property<int>("DoctorId")
-                        .HasColumnType("integer");
+                b.Property<int>("DoctorId")
+                    .HasColumnType("integer");
 
-                    b.Property<TimeSpan>("EndTime")
-                        .HasColumnType("interval");
+                b.Property<TimeSpan>("EndTime")
+                    .HasColumnType("interval");
 
-                    b.Property<TimeSpan>("StartTime")
-                        .HasColumnType("interval");
+                b.Property<TimeSpan>("StartTime")
+                    .HasColumnType("interval");
 
-                    b.HasKey("ScheduleId");
+                b.HasKey("ScheduleId");
 
-                    b.HasIndex("DoctorId");
+                b.HasIndex("DoctorId");
 
-                    b.ToTable("Schedules");
-                });
+                b.ToTable("Schedules");
+            });
 
             modelBuilder.Entity("MedicalAppointmentAPI.Models.Specialization", b =>
-                {
-                    b.Property<int>("SpecializationId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+            {
+                b.Property<int>("SpecializationId")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("SpecializationId"));
+                NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("SpecializationId"));
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                b.Property<string>("Name")
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnType("character varying(50)");
 
-                    b.HasKey("SpecializationId");
+                b.HasKey("SpecializationId");
 
-                    b.ToTable("Specializations");
-                });
+                b.ToTable("Specializations");
+            });
 
             modelBuilder.Entity("MedicalAppointmentAPI.Models.Appointment", b =>
-                {
-                    b.HasOne("MedicalAppointmentAPI.Models.Doctor", "Doctor")
-                        .WithMany("Appointments")
-                        .HasForeignKey("DoctorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+            {
+                b.HasOne("MedicalAppointmentAPI.Models.Doctor", "Doctor")
+                    .WithMany("Appointments")
+                    .HasForeignKey("DoctorId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
 
-                    b.HasOne("MedicalAppointmentAPI.Models.Patient", "Patient")
-                        .WithMany("Appointments")
-                        .HasForeignKey("PatientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                b.HasOne("MedicalAppointmentAPI.Models.Patient", "Patient")
+                    .WithMany("Appointments")
+                    .HasForeignKey("PatientId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
 
-                    b.Navigation("Doctor");
+                b.Navigation("Doctor");
 
-                    b.Navigation("Patient");
-                });
+                b.Navigation("Patient");
+            });
 
             modelBuilder.Entity("MedicalAppointmentAPI.Models.Doctor", b =>
-                {
-                    b.HasOne("MedicalAppointmentAPI.Models.Specialization", "Specialization")
-                        .WithMany("Doctors")
-                        .HasForeignKey("SpecializationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+            {
+                b.HasOne("MedicalAppointmentAPI.Models.Specialization", "Specialization")
+                    .WithMany("Doctors")
+                    .HasForeignKey("SpecializationId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
 
-                    b.Navigation("Specialization");
-                });
+                b.Navigation("Specialization");
+            });
 
             modelBuilder.Entity("MedicalAppointmentAPI.Models.Schedule", b =>
-                {
-                    b.HasOne("MedicalAppointmentAPI.Models.Doctor", "Doctor")
-                        .WithMany("Schedules")
-                        .HasForeignKey("DoctorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+            {
+                b.HasOne("MedicalAppointmentAPI.Models.Doctor", "Doctor")
+                    .WithMany("Schedules")
+                    .HasForeignKey("DoctorId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
 
-                    b.Navigation("Doctor");
-                });
+                b.Navigation("Doctor");
+            });
 
             modelBuilder.Entity("MedicalAppointmentAPI.Models.Doctor", b =>
-                {
-                    b.Navigation("Appointments");
+            {
+                b.Navigation("Appointments");
 
-                    b.Navigation("Schedules");
-                });
+                b.Navigation("Schedules");
+            });
 
             modelBuilder.Entity("MedicalAppointmentAPI.Models.Patient", b =>
-                {
-                    b.Navigation("Appointments");
-                });
+            {
+                b.Navigation("Appointments");
+            });
 
             modelBuilder.Entity("MedicalAppointmentAPI.Models.Specialization", b =>
-                {
-                    b.Navigation("Doctors");
-                });
+            {
+                b.Navigation("Doctors");
+            });
 #pragma warning restore 612, 618
         }
     }

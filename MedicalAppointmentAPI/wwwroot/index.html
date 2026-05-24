@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Medical Appointment API</title>
+    <link rel="stylesheet" href="css/site.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Medical Appointment API</h1>
+        <p class="description">
+            Simple front end for working with Web API controllers using JavaScript Fetch API.
+        </p>
+
+        <nav>
+            <button onclick="showSection('patients')">Patients</button>
+            <button onclick="showSection('specializations')">Specializations</button>
+            <button onclick="showSection('doctors')">Doctors</button>
+            <button onclick="showSection('schedules')">Schedules</button>
+            <button onclick="showSection('appointments')">Appointments</button>
+        </nav>
+
+        <p id="message"></p>
+
+        <!-- PATIENTS -->
+        <section id="patients" class="section active">
+            <h2>Patients</h2>
+
+            <form onsubmit="savePatient(event)">
+                <input type="hidden" id="patientId">
+
+                <input type="text" id="patientFullName" placeholder="Full name" required>
+                <input type="text" id="patientPhone" placeholder="Phone" required>
+                <input type="email" id="patientEmail" placeholder="Email">
+
+                <button type="submit">Save patient</button>
+                <button type="button" onclick="clearPatientForm()">Clear</button>
+            </form>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Full name</th>
+                        <th>Phone</th>
+                        <th>Email</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="patientsTable"></tbody>
+            </table>
+        </section>
+
+        <!-- SPECIALIZATIONS -->
+        <section id="specializations" class="section">
+            <h2>Specializations</h2>
+
+            <form onsubmit="saveSpecialization(event)">
+                <input type="hidden" id="specializationId">
+
+                <input type="text" id="specializationName" placeholder="Specialization name" required>
+
+                <button type="submit">Save specialization</button>
+                <button type="button" onclick="clearSpecializationForm()">Clear</button>
+            </form>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="specializationsTable"></tbody>
+            </table>
+        </section>
+
+        <!-- DOCTORS -->
+        <section id="doctors" class="section">
+            <h2>Doctors</h2>
+
+            <form onsubmit="saveDoctor(event)">
+                <input type="hidden" id="doctorId">
+
+                <input type="text" id="doctorFullName" placeholder="Doctor full name" required>
+                <select id="doctorSpecializationId" required></select>
+
+                <button type="submit">Save doctor</button>
+                <button type="button" onclick="clearDoctorForm()">Clear</button>
+            </form>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Full name</th>
+                        <th>Specialization</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="doctorsTable"></tbody>
+            </table>
+        </section>
+
+        <!-- SCHEDULES -->
+        <section id="schedules" class="section">
+            <h2>Schedules</h2>
+
+            <form onsubmit="saveSchedule(event)">
+                <input type="hidden" id="scheduleId">
+
+                <select id="scheduleDoctorId" required></select>
+
+                <select id="scheduleDayOfWeek" required>
+                    <option value="1">Monday</option>
+                    <option value="2">Tuesday</option>
+                    <option value="3">Wednesday</option>
+                    <option value="4">Thursday</option>
+                    <option value="5">Friday</option>
+                    <option value="6">Saturday</option>
+                    <option value="0">Sunday</option>
+                </select>
+
+                <input type="time" id="scheduleStartTime" required>
+                <input type="time" id="scheduleEndTime" required>
+
+                <button type="submit">Save schedule</button>
+                <button type="button" onclick="clearScheduleForm()">Clear</button>
+            </form>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Doctor</th>
+                        <th>Day</th>
+                        <th>Start</th>
+                        <th>End</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="schedulesTable"></tbody>
+            </table>
+        </section>
+
+        <!-- APPOINTMENTS -->
+        <section id="appointments" class="section">
+            <h2>Appointments</h2>
+
+            <form onsubmit="saveAppointment(event)">
+                <input type="hidden" id="appointmentId">
+
+                <select id="appointmentPatientId" required></select>
+                <select id="appointmentDoctorId" required></select>
+
+                <input type="datetime-local" id="appointmentDateTime" required>
+                <input type="number" id="appointmentDurationMinutes" min="1" max="480" value="30" required>
+
+                <select id="appointmentStatus" required>
+                    <option value="Scheduled">Scheduled</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Cancelled">Cancelled</option>
+                </select>
+
+                <button type="submit">Save appointment</button>
+                <button type="button" onclick="clearAppointmentForm()">Clear</button>
+            </form>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Patient</th>
+                        <th>Doctor</th>
+                        <th>Date and time</th>
+                        <th>Duration</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="appointmentsTable"></tbody>
+            </table>
+        </section>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
